@@ -21,11 +21,11 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public Post createPost(PostCreateDTO postDTO) {
-        Optional<User> user = userRepository.findById(postDTO.getUserId());
+    public Post createPost(PostCreateDTO request) {
+        Optional<User> user = userRepository.findById(request.getUserId());
         if (user.isPresent()) {
             Post post = new Post();
-            post.setContent(postDTO.getContent());
+            post.setContent(request.getContent());
             post.setUser(user.get());
             return postRepository.save(post);
         } else {

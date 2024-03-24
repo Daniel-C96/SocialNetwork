@@ -101,13 +101,13 @@ public class AuthService {
         return null; // Return null if all checks pass
     }
 
-    private User createUserFromDTO(UserCreateDTO userDTO) {
+    private User createUserFromDTO(UserCreateDTO request) {
         return User.builder()
-                .username(userDTO.getUsername())
-                .alias(userDTO.getAlias())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .email(userDTO.getEmail().toLowerCase())
-                .description(Optional.ofNullable(userDTO.getDescription()).orElse(""))
+                .username(request.getUsername())
+                .alias(request.getAlias())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail().toLowerCase())
+                .description(Optional.ofNullable(request.getDescription()).orElse(""))
                 .role(Role.USER)
                 .profilePicture("default_profile_picture.png")
                 .build();

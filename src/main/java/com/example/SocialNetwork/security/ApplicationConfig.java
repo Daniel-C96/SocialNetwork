@@ -1,4 +1,4 @@
-package com.example.SocialNetwork.config;
+package com.example.SocialNetwork.security;
 
 import com.example.SocialNetwork.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    //Class for all the Beans
-
     @Autowired
     private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsernameIgnoreCase(username)
+        return identifier -> userRepository.findByUsernameOrEmailIgnoreCase(identifier)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
