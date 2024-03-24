@@ -1,10 +1,11 @@
 package com.example.SocialNetwork.security;
 
+import com.example.SocialNetwork.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,6 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -21,35 +21,28 @@ public class JwtService {
     private static final String SECRET_KEY = "jTWFyZ39wx4im70U51fugE6/XvFuCucfpIJgjjXku4WTJrpWN/gSh24oHVbkqPCT";
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts
-                .builder()
-                .claims(extraClaims)
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 60)) //60 days
-                .signWith(getSignInKey())
-                .compact();
+        if (userDetails instanceof User user) {
+            return Jwts.builder()
+                    .claims(extraClaims)
+                    .id(String.valueOf(user.getId()))
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 60)) //60 days
+                    .signWith(getSignInKey())
+                    .compact();
+        } else {
+            System.out.println("Error generating token");
+            throw new IllegalArgumentException("There was an error");
+        }
     }
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
+    //Validate Token with Id and not username since the Username can change
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        final Long userId = extractId(token);
+        return (userId.equals(((User) userDetails).getId())) && !isTokenExpired(token);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -69,5 +62,18 @@ public class JwtService {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Long extractId(String token) {
+        String id = extractClaim(token, Claims::getId);
+        return Long.valueOf(id);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }
