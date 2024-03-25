@@ -1,7 +1,6 @@
 package com.example.SocialNetwork.service;
 
-import com.example.SocialNetwork.model.User;
-import com.example.SocialNetwork.projection.UserBasicInformation;
+import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,5 @@ public class UserService {
         }
         return ResponseEntity.ok(user);
     }
-
-
 }
 

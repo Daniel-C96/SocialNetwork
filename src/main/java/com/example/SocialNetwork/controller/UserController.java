@@ -1,6 +1,6 @@
 package com.example.SocialNetwork.controller;
 
-import com.example.SocialNetwork.projection.UserBasicInformation;
+import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +27,4 @@ public class UserController {
     public ResponseEntity<?> retrieveUserById(@PathVariable Long userId) {
         return userService.retrieveUserById(userId);
     }
-
 }

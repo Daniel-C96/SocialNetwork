@@ -1,4 +1,6 @@
-package com.example.SocialNetwork.projection;
+package com.example.SocialNetwork.projection.post;
+
+import com.example.SocialNetwork.projection.user.UserBasicInformation;
 
 public interface PostBasicInformation {
     Long getId();

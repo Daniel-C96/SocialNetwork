@@ -1,7 +1,7 @@
 package com.example.SocialNetwork.controller;
 
 import com.example.SocialNetwork.dto.post.PostCreateDTO;
-import com.example.SocialNetwork.projection.PostBasicInformation;
+import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class PostController {
         return postService.retrieveAllPosts();
     }
 
-    @GetMapping("/posts/{userId}")
+    @GetMapping("/posts/user/{userId}")
     public List<PostBasicInformation> getAllPostsByUserId(@PathVariable long userId) {
         return postService.findPostsByUserId(userId);
     }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class AuthService {
             // Save the user if everything is valid
             User user = createUserFromDTO(request);
             userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully:\n" + request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -110,14 +111,18 @@ public class AuthService {
     }
 
     public ResponseEntity<?> login(UserLoginDTO request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        request.getIdentifier(),
-                        request.getPassword()
-                )
-        );
-        var user = userRepository.findByUsernameOrEmailIgnoreCase(request.getIdentifier())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(jwtToken);
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                            request.getIdentifier(),
+                            request.getPassword()
+                    )
+            );
+            var user = userRepository.findByUsernameOrEmailIgnoreCase(request.getIdentifier())
+                    .orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(jwtToken);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 }

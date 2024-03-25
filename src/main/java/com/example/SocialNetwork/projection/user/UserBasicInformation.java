@@ -1,4 +1,4 @@
-package com.example.SocialNetwork.projection;
+package com.example.SocialNetwork.projection.user;
 
 import com.example.SocialNetwork.model.Post;
 
