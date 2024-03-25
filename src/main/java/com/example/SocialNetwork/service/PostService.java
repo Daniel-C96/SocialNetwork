@@ -1,6 +1,6 @@
 package com.example.SocialNetwork.service;
 
-import com.example.SocialNetwork.dto.post.PostCreateDTO;
+import com.example.SocialNetwork.dto.post.CreatePostRequest;
 import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
@@ -22,7 +22,7 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    public Post createPost(PostCreateDTO request) {
+    public Post createPost(CreatePostRequest request) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Post post = new Post();
         post.setContent(request.getContent());

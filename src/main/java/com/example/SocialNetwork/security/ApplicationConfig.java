@@ -26,6 +26,9 @@ public class ApplicationConfig {
     @Autowired
     private final UserRepository userRepository;
 
+    //"UserDetailsService is used by DaoAuthenticationProvider for retrieving a username, a password,
+    // and other attributes for authenticating with a username and password. Spring Security provides
+    // in-memory and JDBC implementations of UserDetailsService." - Official documentation
     @Bean
     public UserDetailsService userDetailsService() {
         return identifier -> userRepository.findByUsernameOrEmailIgnoreCase(identifier)

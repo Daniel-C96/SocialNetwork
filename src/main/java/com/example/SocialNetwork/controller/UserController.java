@@ -2,6 +2,8 @@ package com.example.SocialNetwork.controller;
 
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +15,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "User Controller", description = "Functions related to Users")
 public class UserController {
 
     @Autowired
     UserService userService;
 
+    @Operation(summary = "Retrieves all Users ")
     @GetMapping("/users")
     public List<UserBasicInformation> retrieveAllUsers() {
         return userService.retrieveAllUsers();
     }
 
+    @Operation(summary = "Retrieves a User from userId",
+            description = "Retrieves the User with the userId in the Path")
     @GetMapping("/{userId}")
     public ResponseEntity<?> retrieveUserById(@PathVariable Long userId) {
         return userService.retrieveUserById(userId);

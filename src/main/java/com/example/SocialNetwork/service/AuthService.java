@@ -1,7 +1,7 @@
 package com.example.SocialNetwork.service;
 
-import com.example.SocialNetwork.dto.user.UserCreateDTO;
-import com.example.SocialNetwork.dto.user.UserLoginDTO;
+import com.example.SocialNetwork.dto.user.RegisterRequest;
+import com.example.SocialNetwork.dto.user.LoginRequest;
 import com.example.SocialNetwork.model.Role;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.repository.UserRepository;
@@ -34,7 +34,7 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public ResponseEntity<?> register(UserCreateDTO request) {
+    public ResponseEntity<?> register(RegisterRequest request) {
         try {
             // Verify if the user is valid
             ResponseEntity<?> isValidUserResponse = isValidUser(request);
@@ -53,7 +53,7 @@ public class AuthService {
         }
     }
 
-    private ResponseEntity<?> isValidUser(UserCreateDTO request) {
+    private ResponseEntity<?> isValidUser(RegisterRequest request) {
         // Verify the required fields are not empty
         if (request.getUsername() == null || request.getPassword() == null ||
                 request.getEmail() == null || request.getAlias() == null) {
@@ -98,7 +98,7 @@ public class AuthService {
         return null; // Return null if all checks pass
     }
 
-    private User createUserFromDTO(UserCreateDTO request) {
+    private User createUserFromDTO(RegisterRequest request) {
         return User.builder()
                 .username(request.getUsername())
                 .alias(request.getAlias())
@@ -110,7 +110,7 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseEntity<?> login(UserLoginDTO request) {
+    public ResponseEntity<?> login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                             request.getIdentifier(),
