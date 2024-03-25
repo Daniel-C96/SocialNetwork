@@ -1,7 +1,7 @@
 package com.example.SocialNetwork.controller;
 
-import com.example.SocialNetwork.dto.UserCreateDTO;
-import com.example.SocialNetwork.dto.UserLoginDTO;
+import com.example.SocialNetwork.dto.user.UserCreateDTO;
+import com.example.SocialNetwork.dto.user.UserLoginDTO;
 import com.example.SocialNetwork.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

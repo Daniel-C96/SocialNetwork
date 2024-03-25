@@ -1,8 +1,6 @@
 package com.example.SocialNetwork.controller;
 
-import com.example.SocialNetwork.dto.PostCreateDTO;
-import com.example.SocialNetwork.model.Post;
-import com.example.SocialNetwork.model.User;
+import com.example.SocialNetwork.dto.post.PostCreateDTO;
 import com.example.SocialNetwork.projection.PostBasicInformation;
 import com.example.SocialNetwork.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,7 @@ public class PostController {
     }
 
     @GetMapping("/posts/{userId}")
-    public List<Post> getAllPostsByUserId(@PathVariable long userId) {
+    public List<PostBasicInformation> getAllPostsByUserId(@PathVariable long userId) {
         return postService.findPostsByUserId(userId);
     }
 }

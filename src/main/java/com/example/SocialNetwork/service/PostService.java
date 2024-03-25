@@ -1,6 +1,6 @@
 package com.example.SocialNetwork.service;
 
-import com.example.SocialNetwork.dto.PostCreateDTO;
+import com.example.SocialNetwork.dto.post.PostCreateDTO;
 import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.projection.PostBasicInformation;
@@ -31,18 +31,51 @@ public class PostService {
     }
 
     public List<PostBasicInformation> retrieveAllPosts() {
-        return postRepository.findAllPostBasicInformationBy();
+        return postRepository.findAllBy();
     }
 
-    public List<Post> findPostsByUserId(long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return postRepository.findAllPostsByUser(user).reversed(); //Reverse to get latest posts first
+    public List<PostBasicInformation> findPostsByUserId(long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return postRepository.findByUser_Id(user.get().getId());
         } else {
             return null;
         }
     }
+
+/*    public List<PostBasicInformationDTO> findPostsByUserId(long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Post> posts = postRepository.findAllPostsByUser(user);
+            return createPostBasicInformationDTOList(posts).reversed(); //Reverse to get latest posts first
+        } else {
+            return null;
+        }
+    }*/
+
+    //Method to convert the list of Posts to a PostBasicInformationDTO with the only needed fields
+/*    private PostBasicInformationDTO createPostBasicInformationDTO(Post post) {
+        UserPostInfoDTO userDTO = new UserPostInfoDTO(
+                post.getUser().getId(),
+                post.getUser().getUsername(),
+                post.getUser().getAlias(),
+                post.getUser().getProfilePicture()
+        );
+
+        return new PostBasicInformationDTO(
+                post.getId(),
+                post.getContent(),
+                post.getLikes(),
+                userDTO
+        );
+    }
+
+    private List<PostBasicInformationDTO> createPostBasicInformationDTOList(List<Post> posts) {
+        return posts.stream()
+                .map(this::createPostBasicInformationDTO)
+                .collect(Collectors.toList());
+    }*/
 
 }

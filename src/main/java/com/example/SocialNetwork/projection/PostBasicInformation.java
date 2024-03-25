@@ -5,7 +5,7 @@ public interface PostBasicInformation {
 
     String getContent();
 
-    UserBasicInformation getUser(); // Basic User Projection with less fields
+    UserBasicInformation getUser(); // Basic User Projection
 
     int getLikes();
 

@@ -1,22 +1,18 @@
 package com.example.SocialNetwork.service;
 
-import com.example.SocialNetwork.dto.UserCreateDTO;
-import com.example.SocialNetwork.dto.UserLoginDTO;
+import com.example.SocialNetwork.dto.user.UserCreateDTO;
+import com.example.SocialNetwork.dto.user.UserLoginDTO;
 import com.example.SocialNetwork.model.Role;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.repository.UserRepository;
 import com.example.SocialNetwork.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.html.Option;
 
 import java.util.Optional;
 

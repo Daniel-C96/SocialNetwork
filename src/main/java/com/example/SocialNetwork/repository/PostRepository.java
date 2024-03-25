@@ -11,8 +11,10 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    //What there is between "find" and "By" gets ignored so "findBy" would work, but it is useful for better naming
-    List<PostBasicInformation> findAllPostBasicInformationBy();
-
     List<Post> findAllPostsByUser(User user);
+
+    List<PostBasicInformation> findAllBy();
+
+    List<PostBasicInformation> findByUser_Id(Long userId);
+
 }

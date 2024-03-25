@@ -1,4 +1,4 @@
-package com.example.SocialNetwork.dto;
+package com.example.SocialNetwork.dto.post;
 
 import lombok.Data;
 
