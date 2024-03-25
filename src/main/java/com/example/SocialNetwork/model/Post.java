@@ -26,6 +26,7 @@ public class Post {
     @JsonIgnore
     private User user;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
     private int likes = 0;
 
 }
