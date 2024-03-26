@@ -30,11 +30,10 @@ public class Post {
     private User user;
 
     @Column(name = "like_count", nullable = false, columnDefinition = "int default 0")
-    private int likeCount = 0;
+    private int likeCount = 0; //Count instead of counting usersLiked in case the app needs to scale a lot
 
     //mappedBy makes usersLiked a child of likedPosts, so to edit usersLiked you have to edit likedPosts in User
     @ManyToMany(mappedBy = "likedPosts")
     @JsonIgnore
     private List<User> usersLiked = new ArrayList<>();
-
 }

@@ -72,7 +72,6 @@ public class PostService {
         }
     }
 
-    @Transactional
     public ResponseEntity<?> likePost(Long postId) {
         try {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -87,14 +86,14 @@ public class PostService {
                     .anyMatch(likedUser -> likedUser.getId().equals(user.getId()));
 
             if (alreadyLiked) {
-                // Remove like if the user has already liked it
-                post.setLikeCount(post.getLikeCount() - 1);
+                //post.setLikeCount(post.getLikeCount() - 1); This does not work, I don't know why.
+                postRepository.removeLikeFromPost(postId); //Method created to solve the problem
                 user.getLikedPosts().remove(post);
                 userRepository.save(user); // Update user entity
+                //Method created to delete entry from liked_posts table
                 userRepository.deleteLikedPostEntry(user.getId(), postId);
                 return ResponseEntity.ok("Like removed from the post.");
             } else {
-                // Add like
                 post.setLikeCount(post.getLikeCount() + 1);
                 user.getLikedPosts().add(post);
                 userRepository.save(user); // Update user entity
@@ -104,6 +103,5 @@ public class PostService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating like status: " + e.getMessage());
         }
     }
-
 }
 

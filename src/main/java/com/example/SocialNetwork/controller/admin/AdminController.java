@@ -17,6 +17,6 @@ public class AdminController {
             summary = "Test endpoint")
     @GetMapping("/test")
     public String test() {
-        return "This is only accessible by admins.";
+        return "Admin panel.";
     }
 }
