@@ -41,7 +41,7 @@ public class User implements UserDetails {
 
     private String profilePicture = "default_profile_picture.png";
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
@@ -51,7 +51,10 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )
-    private List<Post> likedPosts = new ArrayList<>(); // Posts liked by the user
+    private List<Post> likedPosts = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Post> favPosts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -80,5 +83,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

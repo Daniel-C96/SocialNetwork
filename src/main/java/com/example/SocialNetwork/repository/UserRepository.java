@@ -35,4 +35,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "DELETE FROM liked_posts WHERE user_id = :userId AND post_id = :postId", nativeQuery = true)
     void deleteLikedPostEntry(Long userId, Long postId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM users_fav_posts WHERE user_id = :userId AND fav_posts_id = :postId", nativeQuery = true)
+    void deleteFavPostEntry(Long userId, Long postId);
+
+
 }

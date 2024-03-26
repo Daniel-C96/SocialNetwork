@@ -39,6 +39,6 @@ public class UserController {
     @Operation(summary = "Get full own User info")
     @GetMapping("/user")
     public User getOwnUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userService.getOwnUser();
     }
 }

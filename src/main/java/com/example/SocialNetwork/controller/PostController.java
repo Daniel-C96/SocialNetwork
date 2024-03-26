@@ -56,9 +56,23 @@ public class PostController {
     }
 
     @Operation(description = "Likes the post on the path with the User that provided the JWT.",
-            summary = "Likes a post with postId")
+            summary = "Likes a Post with postId")
     @PutMapping("/posts/{postId}/like")
     public ResponseEntity<?> likePost(@PathVariable long postId) {
         return postService.likePost(postId);
+    }
+
+    @Operation(description = "Adds a post to favorites to the User that provided the JWT.",
+            summary = "Adds a Post to favorites")
+    @PutMapping("/posts/{postId}/fav")
+    public ResponseEntity<?> favPost(@PathVariable long postId) {
+        return postService.favPost(postId);
+    }
+
+    @Operation(description = "Retrieves the posts in favorites of User that provided the JWT since they are private.",
+            summary = "Lists posts in favorites")
+    @GetMapping("/posts/user/favs")
+    public List<PostBasicInformation> findFavPostsByUserId() {
+        return postService.findFavPostsByUserId();
     }
 }

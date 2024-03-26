@@ -40,7 +40,6 @@ public class PostService {
         }
     }
 
-
     public List<PostBasicInformation> retrieveAllPosts() {
         return postRepository.findAllBy();
     }
@@ -54,6 +53,7 @@ public class PostService {
         }
     }
 
+    //Lists the posts that were liked by a user
     public List<PostBasicInformation> findLikedPostsByUserId(long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
@@ -63,6 +63,7 @@ public class PostService {
         }
     }
 
+    //Lists the users that have liked a post
     public List<UserBasicInformation> findUsersLikedByPostId(long postId) {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isPresent()) {
@@ -86,22 +87,66 @@ public class PostService {
                     .anyMatch(likedUser -> likedUser.getId().equals(user.getId()));
 
             if (alreadyLiked) {
-                //post.setLikeCount(post.getLikeCount() - 1); This does not work, I don't know why.
-                postRepository.removeLikeFromPost(postId); //Method created to solve the problem
-                user.getLikedPosts().remove(post);
-                userRepository.save(user); // Update user entity
-                //Method created to delete entry from liked_posts table
-                userRepository.deleteLikedPostEntry(user.getId(), postId);
+                removeLike(postId, post, user);
                 return ResponseEntity.ok("Like removed from the post.");
             } else {
-                post.setLikeCount(post.getLikeCount() + 1);
-                user.getLikedPosts().add(post);
-                userRepository.save(user); // Update user entity
+                addLike(post, user);
                 return ResponseEntity.ok("Like added to the post.");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating like status: " + e.getMessage());
         }
+    }
+
+    private void removeLike(Long postId, Post post, User user) {
+        //post.setLikeCount(post.getLikeCount() - 1); This does not work, I don't know why.
+        postRepository.removeLikeFromPost(postId); //Method created to solve the problem
+        user.getLikedPosts().remove(post);
+        userRepository.save(user); // Update user entity
+        //Method created to delete entry from liked_posts table because it does not autoupdate with JPA
+        userRepository.deleteLikedPostEntry(user.getId(), postId);
+    }
+
+    private void addLike(Post post, User user) {
+        post.setLikeCount(post.getLikeCount() + 1);
+        user.getLikedPosts().add(post);
+        userRepository.save(user); // Update user entity
+    }
+
+    public ResponseEntity<?> favPost(Long postId) {
+        try {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Post> optionalPost = postRepository.findById(postId);
+            if (optionalPost.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The post was not found.");
+            }
+
+            Post post = optionalPost.get();
+            boolean alreadyFaved = user.getFavPosts().stream()
+                    .anyMatch(favedPost -> favedPost.getId().equals(post.getId()));
+            if (alreadyFaved) {
+                removeFav(postId, post, user);
+                return ResponseEntity.ok("Post removed from favorites.");
+            } else {
+                user.getFavPosts().add(post);
+                userRepository.save(user);
+                return ResponseEntity.ok("Post added to favorites.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating favorite status: " + e.getMessage());
+        }
+    }
+
+    private void removeFav(Long postId, Post post, User user) {
+        user.getFavPosts().remove(post);
+        userRepository.deleteFavPostEntry(user.getId(), postId);
+        userRepository.save(user);
+    }
+
+    //Finds all post faved by the User that provides the token since favs are private
+    public List<PostBasicInformation> findFavPostsByUserId() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return postRepository.findFavPostsByUserId(user.getId());
     }
 }
 
