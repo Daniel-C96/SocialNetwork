@@ -32,6 +32,7 @@ public class Post {
     @Column(name = "like_count", nullable = false, columnDefinition = "int default 0")
     private int likeCount = 0;
 
+    //mappedBy makes usersLiked a child of likedPosts, so to edit usersLiked you have to edit likedPosts in User
     @ManyToMany(mappedBy = "likedPosts")
     @JsonIgnore
     private List<User> usersLiked = new ArrayList<>();

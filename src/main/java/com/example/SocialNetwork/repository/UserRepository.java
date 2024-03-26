@@ -4,7 +4,9 @@ import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.projection.user.UserProfileInformation;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,4 +30,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u JOIN u.likedPosts p WHERE p.id = :postId")
     List<UserBasicInformation> findUsersLikedByPostId(@Param("postId") Long postId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM liked_posts WHERE user_id = :userId AND post_id = :postId", nativeQuery = true)
+    void deleteLikedPostEntry(Long userId, Long postId);
 }

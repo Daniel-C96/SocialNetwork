@@ -84,18 +84,26 @@ public class PostService {
             Post post = optionalPost.get();
             String message = "";
 
-            if (user.getLikedPosts().contains(post)) {
+            // Check if the user already liked the post by its ID
+            boolean alreadyLiked = post.getUsersLiked().stream()
+                    .anyMatch(likedUser -> likedUser.getId().equals(user.getId()));
+
+            if (alreadyLiked) {
                 // Remove like if the user has already liked it
                 post.setLikeCount(post.getLikeCount() - 1);
-                post.getUsersLiked().remove(user);
+                user.getLikedPosts().remove(post);
+                userRepository.deleteLikedPostEntry(user.getId(), postId);
                 message = "Like removed from the post.";
             } else {
                 // Add like
                 post.setLikeCount(post.getLikeCount() + 1);
-                post.getUsersLiked().add(user);
+                user.getLikedPosts().add(post);
                 message = "Like added to the post.";
             }
             postRepository.save(post);
+            //Have to edit user and not post for usersLiked because usersLiked is a child of postsLiked of User
+            userRepository.save(user);
+
             return ResponseEntity.ok(message);
 
         } catch (Exception e) {

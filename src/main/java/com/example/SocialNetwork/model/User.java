@@ -45,7 +45,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "liked_posts",
             joinColumns = @JoinColumn(name = "user_id"),
