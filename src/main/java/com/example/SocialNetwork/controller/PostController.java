@@ -1,7 +1,9 @@
 package com.example.SocialNetwork.controller;
 
 import com.example.SocialNetwork.dto.post.CreatePostRequest;
+import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
+import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,15 +24,8 @@ public class PostController {
     @Operation(description = "Creates a Post. It takes the User from the JWT provided.",
             summary = "Create Post endpoint")
     @PostMapping("/create")
-    public ResponseEntity<CreatePostRequest> createPost(@RequestBody CreatePostRequest postDTO) {
-        try {
-            postService.createPost(postDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(postDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<?> createPost(@RequestBody CreatePostRequest postDTO) {
+        return postService.createPost(postDTO);
     }
 
     @Operation(summary = "Retrieves all Posts ")
@@ -44,5 +39,26 @@ public class PostController {
     @GetMapping("/posts/user/{userId}")
     public List<PostBasicInformation> getAllPostsByUserId(@PathVariable long userId) {
         return postService.findPostsByUserId(userId);
+    }
+
+    @Operation(description = "Retrieves all the Posts liked by the user with the userId provided on the path.",
+            summary = "Retrieves all liked posts from userId")
+    @GetMapping("/posts/user/{userId}/likes")
+    public List<PostBasicInformation> findLikedPostsByUserId(@PathVariable long userId) {
+        return postService.findLikedPostsByUserId(userId);
+    }
+
+    @Operation(description = "Retrieves all the the Users that liked the post with the postId provided on the path.",
+            summary = "Retrieves all Users that liked the postId")
+    @GetMapping("/posts/{postId}/user_likes")
+    public List<UserBasicInformation> findUsersLikedByPostId(@PathVariable long postId) {
+        return postService.findUsersLikedByPostId(postId);
+    }
+
+    @Operation(description = "Likes the post on the path with the User that provided the JWT.",
+            summary = "Likes a post with postId")
+    @PutMapping("/posts/{postId}/like")
+    public ResponseEntity<?> likePost(@PathVariable long postId) {
+        return postService.likePost(postId);
     }
 }

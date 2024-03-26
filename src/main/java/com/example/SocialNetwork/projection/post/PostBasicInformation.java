@@ -9,6 +9,5 @@ public interface PostBasicInformation {
 
     UserBasicInformation getUser(); // Basic User Projection
 
-    int getLikes();
-
+    int getLikeCount();
 }

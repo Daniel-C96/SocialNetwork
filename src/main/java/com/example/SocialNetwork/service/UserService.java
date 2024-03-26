@@ -1,6 +1,7 @@
 package com.example.SocialNetwork.service;
 
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
+import com.example.SocialNetwork.projection.user.UserProfileInformation;
 import com.example.SocialNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> retrieveUserById(Long id) {
-        Optional<UserBasicInformation> user = userRepository.findUserBasicInformationById(id);
+        Optional<UserProfileInformation> user = userRepository.findUserBasicInformationById(id);
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
         }

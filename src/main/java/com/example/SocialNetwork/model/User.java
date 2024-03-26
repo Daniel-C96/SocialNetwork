@@ -45,6 +45,14 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "liked_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<Post> likedPosts = new ArrayList<>(); // Posts liked by the user
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -72,4 +80,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

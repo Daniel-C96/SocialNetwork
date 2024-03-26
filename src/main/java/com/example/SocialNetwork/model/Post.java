@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,7 +29,11 @@ public class Post {
     @JsonIgnore
     private User user;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private int likes = 0;
+    @Column(name = "like_count", nullable = false, columnDefinition = "int default 0")
+    private int likeCount = 0;
+
+    @ManyToMany(mappedBy = "likedPosts")
+    @JsonIgnore
+    private List<User> usersLiked = new ArrayList<>();
 
 }
