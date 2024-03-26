@@ -72,18 +72,16 @@ public class PostService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> likePost(Long postId) {
         try {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
             Optional<Post> optionalPost = postRepository.findById(postId);
             if (optionalPost.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The post was not found.");
             }
 
             Post post = optionalPost.get();
-            String message = "";
-
             // Check if the user already liked the post by its ID
             boolean alreadyLiked = post.getUsersLiked().stream()
                     .anyMatch(likedUser -> likedUser.getId().equals(user.getId()));
@@ -92,20 +90,16 @@ public class PostService {
                 // Remove like if the user has already liked it
                 post.setLikeCount(post.getLikeCount() - 1);
                 user.getLikedPosts().remove(post);
+                userRepository.save(user); // Update user entity
                 userRepository.deleteLikedPostEntry(user.getId(), postId);
-                message = "Like removed from the post.";
+                return ResponseEntity.ok("Like removed from the post.");
             } else {
                 // Add like
                 post.setLikeCount(post.getLikeCount() + 1);
                 user.getLikedPosts().add(post);
-                message = "Like added to the post.";
+                userRepository.save(user); // Update user entity
+                return ResponseEntity.ok("Like added to the post.");
             }
-            postRepository.save(post);
-            //Have to edit user and not post for usersLiked because usersLiked is a child of postsLiked of User
-            userRepository.save(user);
-
-            return ResponseEntity.ok(message);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating like status: " + e.getMessage());
         }
