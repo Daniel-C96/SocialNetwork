@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -195,15 +196,25 @@ public class PostService {
                     .map(post -> postRepository.findPostBasicInformationById(post.getId()))
                     .collect(Collectors.toList());
             viewPostDetails.setResponses(directResponsesInfo);
-            //Parents
-            if (mainPost.getParent() != null) {
-                PostBasicInformation parentInfo = postRepository.findPostBasicInformationById(mainPost.getParent().getId());
-                viewPostDetails.setParents(Collections.singletonList(parentInfo));
-            }
+
+            // Fill parents List
+            List<PostBasicInformation> parentsInfo = new ArrayList<>();
+            fillParents(mainPost, parentsInfo);
+            viewPostDetails.setParents(parentsInfo);
+
             return viewPostDetails;
         } else {
             return null;
         }
     }
+
+    private void fillParents(Post post, List<PostBasicInformation> parentsInfo) {
+        if (post.getParent() != null) {
+            PostBasicInformation parentInfo = postRepository.findPostBasicInformationById(post.getParent().getId());
+            parentsInfo.add(parentInfo);
+            fillParents(post.getParent(), parentsInfo);
+        }
+    }
+
 }
 
