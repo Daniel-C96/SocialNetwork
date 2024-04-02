@@ -3,14 +3,12 @@ package com.example.SocialNetwork.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -35,6 +33,7 @@ public class Post {
     private int likeCount = 0; //Count instead of counting usersLiked in case the app needs to scale a lot
 
     //mappedBy makes usersLiked a child of likedPosts, so to edit usersLiked you have to edit likedPosts in User
+    //^^ this only applies with Cascade.ALL ^^
     @ManyToMany(mappedBy = "likedPosts")
     @JsonIgnore
     private List<User> usersLiked = new ArrayList<>();
@@ -47,13 +46,12 @@ public class Post {
     @JsonIgnore
     private Post parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Post> responses = new ArrayList<>();
 
-    @JsonIgnore
     @Transient // This indicates JPA that this field is not in the db
     public int getResponsesCount() {
         return responses.size();
     }
-
 }

@@ -45,7 +45,8 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //Stack overflow because of this Cascade.ALL User operations go to Post and Post to User so it's an endless loop
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "liked_posts",
             joinColumns = @JoinColumn(name = "user_id"),

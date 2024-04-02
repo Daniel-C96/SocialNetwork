@@ -30,6 +30,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("UPDATE Post p SET p.likeCount = p.likeCount - 1 WHERE p.id = :postId")
     void removeLikeFromPost(@Param("postId") Long postId);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.likeCount = p.likeCount + 1 WHERE p.id = :postId")
+    void addLikeToPost(@Param("postId") Long postId);
+
     @Query("SELECT p FROM User u JOIN u.favPosts p WHERE u.id = :userId")
     List<PostBasicInformation> findFavPostsByUserId(@Param("userId") Long userId);
 

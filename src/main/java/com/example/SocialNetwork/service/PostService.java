@@ -8,6 +8,7 @@ import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.repository.PostRepository;
 import com.example.SocialNetwork.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,16 +103,24 @@ public class PostService {
     private void removeLike(Long postId, Post post, User user) {
         //post.setLikeCount(post.getLikeCount() - 1); This does not work, I don't know why.
         postRepository.removeLikeFromPost(postId); //Method created to solve the problem
+        post.getUsersLiked().remove(user);
+        postRepository.save(post);
+
         user.getLikedPosts().remove(post);
-        userRepository.save(user); // Update user entity
-        //Method created to delete entry from liked_posts table because it does not autoupdate with JPA
+        //Method created to delete entry from liked_posts table because it does not auto-update with JPA
         userRepository.deleteLikedPostEntry(user.getId(), postId);
+        userRepository.save(user); // Update user entity
+
     }
 
     private void addLike(Post post, User user) {
-        post.setLikeCount(post.getLikeCount() + 1);
+        //post.setLikeCount(post.getLikeCount() + 1);
+        postRepository.addLikeToPost(post.getId());
+        post.getUsersLiked().add(user);
+        postRepository.save(post);
+
         user.getLikedPosts().add(post);
-        userRepository.save(user); // Update user entity
+        userRepository.save(user);
     }
 
     public ResponseEntity<?> favPost(Long postId) {
@@ -170,6 +179,7 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post being responded to does not exist");
     }
 
+    //Method to view details of a post using the ViewPostDetails DTO
     public ViewPostDetails viewPost(Long id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
