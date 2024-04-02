@@ -1,6 +1,7 @@
 package com.example.SocialNetwork.controller;
 
 import com.example.SocialNetwork.dto.post.CreatePostRequest;
+import com.example.SocialNetwork.dto.post.ViewPostDetails;
 import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -75,4 +77,23 @@ public class PostController {
     public List<PostBasicInformation> findFavPostsByUserId() {
         return postService.findFavPostsByUserId();
     }
+
+    @Operation(description = "Respond a post on the Path.",
+            summary = "Respond a post on the Path")
+    @PostMapping("/posts/{postId}/respond")
+    public ResponseEntity<?> respondPost(@PathVariable long postId, @RequestBody CreatePostRequest request) {
+        return postService.respondPost(request, postId);
+    }
+
+    @Operation(description = "View full post info on the postId in the Path.",
+            summary = "View full post info")
+    @GetMapping("/posts/{postId}")
+    public ViewPostDetails viewPost(@PathVariable long postId) {
+        return postService.viewPost(postId);
+    }
+
+
 }
+
+
+

@@ -20,6 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<PostBasicInformation> findByUser_Id(Long userId);
 
+    PostBasicInformation findPostBasicInformationById(Long userId);
+
     @Query("SELECT p FROM Post p JOIN p.usersLiked u WHERE u.id = :userId")
     List<PostBasicInformation> findLikedPostsByUserId(@Param("userId") Long userId);
 
@@ -30,5 +32,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM User u JOIN u.favPosts p WHERE u.id = :userId")
     List<PostBasicInformation> findFavPostsByUserId(@Param("userId") Long userId);
+
+
+    @Query("SELECT p FROM Post p WHERE p.parent.id = :parentId")
+    List<Post> findDirectResponses(@Param("parentId") Long parentId);
 
 }

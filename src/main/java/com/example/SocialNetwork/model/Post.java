@@ -1,12 +1,14 @@
 package com.example.SocialNetwork.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,4 +38,22 @@ public class Post {
     @ManyToMany(mappedBy = "likedPosts")
     @JsonIgnore
     private List<User> usersLiked = new ArrayList<>();
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    @JsonIgnore
+    private Post parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Post> responses = new ArrayList<>();
+
+    @JsonIgnore
+    @Transient // This indicates JPA that this field is not in the db
+    public int getResponsesCount() {
+        return responses.size();
+    }
+
 }

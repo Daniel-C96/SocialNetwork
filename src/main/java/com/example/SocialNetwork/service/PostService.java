@@ -1,22 +1,23 @@
 package com.example.SocialNetwork.service;
 
 import com.example.SocialNetwork.dto.post.CreatePostRequest;
+import com.example.SocialNetwork.dto.post.ViewPostDetails;
 import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.repository.PostRepository;
 import com.example.SocialNetwork.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -147,6 +148,52 @@ public class PostService {
     public List<PostBasicInformation> findFavPostsByUserId() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return postRepository.findFavPostsByUserId(user.getId());
+    }
+
+    public ResponseEntity<?> respondPost(CreatePostRequest request, Long id) {
+        Optional<Post> postResponded = postRepository.findById(id);
+        if (postResponded.isPresent()) {
+            try {
+                User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                Post parentPost = postResponded.get();
+                Post responsePost = new Post();
+                responsePost.setContent(request.getContent());
+                responsePost.setUser(currentUser);
+                responsePost.setParent(parentPost);
+                parentPost.getResponses().add(responsePost);
+                postRepository.save(responsePost);
+                return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating the post: " + e.getMessage());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The post being responded to does not exist");
+    }
+
+    public ViewPostDetails viewPost(Long id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if (optionalPost.isPresent()) {
+            Post mainPost = optionalPost.get();
+            ViewPostDetails viewPostDetails = new ViewPostDetails();
+
+            // Fill basic main post information
+            viewPostDetails.setPost(postRepository.findPostBasicInformationById(mainPost.getId()));
+
+            // Fill responses List
+            List<Post> directResponses = postRepository.findDirectResponses(mainPost.getId());
+            List<PostBasicInformation> directResponsesInfo = directResponses.stream()
+                    .map(post -> postRepository.findPostBasicInformationById(post.getId()))
+                    .collect(Collectors.toList());
+            viewPostDetails.setResponses(directResponsesInfo);
+            //Parents
+            if (mainPost.getParent() != null) {
+                PostBasicInformation parentInfo = postRepository.findPostBasicInformationById(mainPost.getParent().getId());
+                viewPostDetails.setParents(Collections.singletonList(parentInfo));
+            }
+            return viewPostDetails;
+        } else {
+            return null;
+        }
     }
 }
 
