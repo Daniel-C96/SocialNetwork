@@ -35,9 +35,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("UPDATE Post p SET p.likeCount = p.likeCount + 1 WHERE p.id = :postId")
     void addLikeToPost(@Param("postId") Long postId);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.favsCount = p.favsCount - 1 WHERE p.id = :postId")
+    void removeFavFromPost(@Param("postId") Long postId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.favsCount = p.favsCount + 1 WHERE p.id = :postId")
+    void addFavToPost(@Param("postId") Long postId);
+
     @Query("SELECT p FROM User u JOIN u.favPosts p WHERE u.id = :userId")
     List<PostBasicInformation> findFavPostsByUserId(@Param("userId") Long userId);
-
 
     @Query("SELECT p FROM Post p WHERE p.parent.id = :parentId")
     List<Post> findDirectResponses(@Param("parentId") Long parentId);

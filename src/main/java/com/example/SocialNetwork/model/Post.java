@@ -1,14 +1,12 @@
 package com.example.SocialNetwork.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Builder
@@ -50,8 +48,15 @@ public class Post {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Post> responses = new ArrayList<>();
 
-    @Transient // This indicates JPA that this field is not in the db
-    public int getResponsesCount() {
-        return responses.size();
+    @Column(name = "responses_count", nullable = false, columnDefinition = "int default 0")
+    private int responsesCount = 0;
+
+    @Column(name = "favs_count", columnDefinition = "int default 0")
+    private int favCount = 0;
+
+    @PrePersist
+    @PreUpdate
+    public void updateResponsesCount() {
+        this.responsesCount = responses.size();
     }
 }

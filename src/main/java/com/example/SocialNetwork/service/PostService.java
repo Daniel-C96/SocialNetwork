@@ -8,7 +8,6 @@ import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.repository.PostRepository;
 import com.example.SocialNetwork.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -141,6 +139,7 @@ public class PostService {
             } else {
                 user.getFavPosts().add(post);
                 userRepository.save(user);
+                postRepository.addFavToPost(post.getId());
                 return ResponseEntity.ok("Post added to favorites.");
             }
         } catch (Exception e) {
@@ -151,6 +150,7 @@ public class PostService {
     private void removeFav(Long postId, Post post, User user) {
         user.getFavPosts().remove(post);
         userRepository.deleteFavPostEntry(user.getId(), postId);
+        postRepository.removeFavFromPost(post.getId());
         userRepository.save(user);
     }
 
@@ -171,7 +171,9 @@ public class PostService {
                 responsePost.setUser(currentUser);
                 responsePost.setParent(parentPost);
                 parentPost.getResponses().add(responsePost);
+                parentPost.updateResponsesCount();
                 postRepository.save(responsePost);
+
                 return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating the post: " + e.getMessage());
@@ -215,6 +217,5 @@ public class PostService {
             fillParents(post.getParent(), parentsInfo);
         }
     }
-
 }
 

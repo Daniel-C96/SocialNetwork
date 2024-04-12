@@ -57,6 +57,12 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Post> favPosts = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> followers = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> following = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -14,5 +14,9 @@ public interface PostBasicInformation {
 
     int getLikeCount();
 
+    int getResponsesCount();
+
+    int getFavCount();
+
     Date getCreatedAt();
 }
