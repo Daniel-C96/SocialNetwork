@@ -37,12 +37,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE Post p SET p.favsCount = p.favsCount - 1 WHERE p.id = :postId")
+    @Query("UPDATE Post p SET p.favCount = p.favCount - 1 WHERE p.id = :postId")
     void removeFavFromPost(@Param("postId") Long postId);
 
     @Transactional
     @Modifying
-    @Query("UPDATE Post p SET p.favsCount = p.favsCount + 1 WHERE p.id = :postId")
+    @Query("UPDATE Post p SET p.favCount = p.favCount + 1 WHERE p.id = :postId")
     void addFavToPost(@Param("postId") Long postId);
 
     @Query("SELECT p FROM User u JOIN u.favPosts p WHERE u.id = :userId")

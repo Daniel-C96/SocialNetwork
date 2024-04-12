@@ -51,7 +51,7 @@ public class Post {
     @Column(name = "responses_count", nullable = false, columnDefinition = "int default 0")
     private int responsesCount = 0;
 
-    @Column(name = "favs_count", columnDefinition = "int default 0")
+    @Column(name = "fav_count", columnDefinition = "int default 0")
     private int favCount = 0;
 
     @PrePersist

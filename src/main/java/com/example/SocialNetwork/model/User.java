@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private List<Post> posts = new ArrayList<>();
 
     //Stack overflow because of this Cascade.ALL User operations go to Post and Post to User so it's an endless loop
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "liked_posts",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -60,8 +60,23 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER)
     private List<User> followers = new ArrayList<>();
 
+    @Column(name = "follower_count", nullable = false, columnDefinition = "int default 0")
+    private int followerCount = 0;
+
     @OneToMany(fetch = FetchType.EAGER)
     private List<User> following = new ArrayList<>();
+
+    @Column(name = "following_count", nullable = false, columnDefinition = "int default 0")
+    private int followingCount = 0;
+
+
+    public void updateFollowerCount() {
+        this.followerCount = followers.size();
+    }
+
+    public void updateFollowingCount() {
+        this.followingCount = following.size();
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role;

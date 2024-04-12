@@ -11,4 +11,8 @@ public interface UserProfileInformation {
     String getProfilePicture();
 
     String getDescription();
+
+    int getFollowerCount();
+
+    int getFollowingCount();
 }

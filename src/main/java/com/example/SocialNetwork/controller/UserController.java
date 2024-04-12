@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,4 +38,24 @@ public class UserController {
     public User getOwnUser() {
         return userService.getOwnUser();
     }
+
+    @Operation(summary = "Follow a User from userId",
+            description = "The User that provides a token follows/unfollows the userId in the path")
+    @PutMapping("follow/{userId}")
+    public ResponseEntity<?> followUser(@PathVariable Long userId) {
+        return userService.followUser(userId);
+    }
+
+    @Operation(summary = "Get all followers from userId")
+    @GetMapping("/followers/{userId}")
+    public List<UserBasicInformation> retrieveFollowers(@PathVariable Long userId) {
+        return userService.retrieveFollowers(userId);
+    }
+
+    @Operation(summary = "Get all users that userId is following")
+    @GetMapping("/following/{userId}")
+    public List<UserBasicInformation> retrieveFollowing(@PathVariable Long userId) {
+        return userService.retrieveFollowing(userId);
+    }
+
 }
