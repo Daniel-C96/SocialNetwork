@@ -70,6 +70,14 @@ public class User implements UserDetails {
     private int followingCount = 0;
 
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "posts_reposted",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<Post> repostedPosts = new ArrayList<>();
+
     public void updateFollowerCount() {
         this.followerCount = followers.size();
     }
