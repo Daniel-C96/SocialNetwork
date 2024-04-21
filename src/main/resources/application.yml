@@ -16,3 +16,21 @@ spring:
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+
+application:
+  bucket:
+    name: social-network-danielc
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+      session-token: ${AWS_SESSION_TOKEN}
+
+

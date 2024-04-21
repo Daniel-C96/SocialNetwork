@@ -8,11 +8,14 @@ import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.repository.PostRepository;
 import com.example.SocialNetwork.repository.UserRepository;
+import com.example.SocialNetwork.service.s3.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,9 @@ public class PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StorageService storageService;
 
     public ResponseEntity<?> createPost(CreatePostRequest request) {
         try {
@@ -216,6 +222,11 @@ public class PostService {
             parentsInfo.add(parentInfo);
             fillParents(post.getParent(), parentsInfo);
         }
+    }
+
+    //Upload test method
+    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
+        return new ResponseEntity<>(storageService.uploadFile(file), HttpStatus.OK);
     }
 }
 

@@ -6,12 +6,14 @@ import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.service.PostService;
+import com.example.SocialNetwork.service.s3.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,9 @@ import java.util.Map;
 public class PostController {
     @Autowired
     PostService postService;
+
+    @Autowired
+    private StorageService storageService;
 
     @Operation(description = "Creates a Post. It takes the User from the JWT provided.",
             summary = "Create Post endpoint")
@@ -92,7 +97,10 @@ public class PostController {
         return postService.viewPost(postId);
     }
 
-
+    @PostMapping("uploadTest")
+    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
+        return postService.uploadFile(file);
+    }
 }
 
 
