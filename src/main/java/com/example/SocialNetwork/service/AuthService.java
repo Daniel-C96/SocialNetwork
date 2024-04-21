@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.example.SocialNetwork.config.Constants.S3_URL;
 import static com.example.SocialNetwork.service.FieldValidatorService.*;
 
 @Service
@@ -54,7 +55,7 @@ public class AuthService {
             if (request.getFile().isPresent() && Objects.requireNonNull(request.getFile().get().getContentType()).startsWith("image/")) {
                 try {
                     String filename = storageService.uploadFile(request.getFile().get(), "uploads/profile-pictures/");
-                    filename = filename.substring(filename.lastIndexOf("/") + 1); //Save only the name in the DB
+                    filename = S3_URL + filename; //Save whole path to the DB
                     user.setProfilePicture(filename);
                 } catch (Exception e) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while uploading profile picture: " + e.getMessage());
