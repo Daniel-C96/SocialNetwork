@@ -52,10 +52,11 @@ public class AuthService {
             // Create the user if everything is valid
             User user = createUserFromDTO(request);
             //Check if there is a MultipartFile for the profile picture and it is a picture
-            if (request.getFile().isPresent() && Objects.requireNonNull(request.getFile().get().getContentType()).startsWith("image/")) {
+            if (request.getFile() != null && request.getFile().isPresent() && Objects.requireNonNull(request.getFile().get().getContentType()).startsWith("image/")) {
                 try {
                     String filename = storageService.uploadFile(request.getFile().get(), "uploads/profile-pictures/");
-                    filename = S3_URL + filename; //Save whole path to the DB
+                    filename = "/uploads/profile-pictures/" + filename.substring(filename.lastIndexOf("/") + 1); // Concatenate directory with filename
+                    //filename = S3_URL + filename; //Save whole path to the DB
                     user.setProfilePicture(filename);
                 } catch (Exception e) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while uploading profile picture: " + e.getMessage());
@@ -124,7 +125,7 @@ public class AuthService {
                 .email(request.getEmail().toLowerCase())
                 .description(Optional.ofNullable(request.getDescription()).orElse(""))
                 .role(Role.USER)
-                .profilePicture("default_profile_picture.png")
+                .profilePicture("/uploads/profile-pictures/default_profile_picture.png")
                 .build();
     }
 
