@@ -6,6 +6,7 @@ import com.example.SocialNetwork.model.Role;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.repository.UserRepository;
 import com.example.SocialNetwork.security.JwtService;
+import com.example.SocialNetwork.service.s3.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.example.SocialNetwork.service.FieldValidatorService.*;
@@ -34,7 +37,10 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public ResponseEntity<?> register(RegisterRequest request) {
+    @Autowired
+    private StorageService storageService;
+
+    public ResponseEntity<?> register(RegisterRequest request, MultipartFile file) {
         try {
             // Verify if the user is valid
             ResponseEntity<?> isValidUserResponse = isValidUser(request);
@@ -42,8 +48,15 @@ public class AuthService {
                 return isValidUserResponse;
             }
 
-            // Save the user if everything is valid
+            // Create the user if everything is valid
             User user = createUserFromDTO(request);
+            //Check if there is a MultipartFile for the profile picture
+            if (file != null && file.isEmpty() && Objects.requireNonNull(file.getContentType()).startsWith("image/")) {
+                storageService.uploadFile(file, "/uploads/profile-pictures/");
+                String filename = file.getName().substring(file.getName().lastIndexOf("/") + 1); //Save only the name in the DB
+                user.setProfilePicture(filename);
+            }
+
             userRepository.save(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
 

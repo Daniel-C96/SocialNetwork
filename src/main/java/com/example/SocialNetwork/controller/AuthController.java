@@ -6,11 +6,10 @@ import com.example.SocialNetwork.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -21,9 +20,9 @@ public class AuthController {
 
     @Operation(description = "This is the endpoint to Sign Up a User.",
             summary = "Sign Up")
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        return authService.register(request);
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request, @RequestParam(value = "file", required = false) MultipartFile file) {
+        return authService.register(request, file);
     }
 
     @Operation(description = "This is the endpoint to Login that provides a JWT when the Login is successful.",

@@ -97,10 +97,6 @@ public class PostController {
         return postService.viewPost(postId);
     }
 
-    @PostMapping("uploadTest")
-    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
-        return postService.uploadFile(file);
-    }
 }
 
 

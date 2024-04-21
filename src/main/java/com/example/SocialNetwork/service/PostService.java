@@ -223,10 +223,5 @@ public class PostService {
             fillParents(post.getParent(), parentsInfo);
         }
     }
-
-    //Upload test method
-    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
-        return new ResponseEntity<>(storageService.uploadFile(file), HttpStatus.OK);
-    }
 }
 
