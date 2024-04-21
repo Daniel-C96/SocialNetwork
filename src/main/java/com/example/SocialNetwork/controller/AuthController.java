@@ -21,8 +21,8 @@ public class AuthController {
     @Operation(description = "This is the endpoint to Sign Up a User.",
             summary = "Sign Up")
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request, @RequestParam(value = "file", required = false) MultipartFile file) {
-        return authService.register(request, file);
+    public ResponseEntity<?> register(@ModelAttribute RegisterRequest request) { //@ModelAttribute for the file
+        return authService.register(request);
     }
 
     @Operation(description = "This is the endpoint to Login that provides a JWT when the Login is successful.",

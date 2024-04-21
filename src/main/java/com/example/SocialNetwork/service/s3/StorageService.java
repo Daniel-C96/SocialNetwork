@@ -22,11 +22,12 @@ public class StorageService {
     @Autowired
     private AmazonS3 s3Client;
 
-    public void uploadFile(MultipartFile file, String path) {
+    public String uploadFile(MultipartFile file, String path) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = path + System.currentTimeMillis() + "_" + file.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete(); //Delete file locally after upload on S3
+        return fileName;
     }
 
     public String deleteFile(String fileName) {

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,5 +25,6 @@ public class RegisterRequest {
     private String email;
     @Schema(example = "this is a description")
     private String description;
-
+    @Schema(example = "file")
+    private Optional<MultipartFile> file;
 }

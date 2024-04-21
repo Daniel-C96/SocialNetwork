@@ -40,7 +40,7 @@ public class AuthService {
     @Autowired
     private StorageService storageService;
 
-    public ResponseEntity<?> register(RegisterRequest request, MultipartFile file) {
+    public ResponseEntity<?> register(RegisterRequest request) {
         try {
             // Verify if the user is valid
             ResponseEntity<?> isValidUserResponse = isValidUser(request);
@@ -50,14 +50,18 @@ public class AuthService {
 
             // Create the user if everything is valid
             User user = createUserFromDTO(request);
-            //Check if there is a MultipartFile for the profile picture
-            if (file != null && file.isEmpty() && Objects.requireNonNull(file.getContentType()).startsWith("image/")) {
-                storageService.uploadFile(file, "/uploads/profile-pictures/");
-                String filename = file.getName().substring(file.getName().lastIndexOf("/") + 1); //Save only the name in the DB
-                user.setProfilePicture(filename);
+            //Check if there is a MultipartFile for the profile picture and it is a picture
+            if (request.getFile().isPresent() && Objects.requireNonNull(request.getFile().get().getContentType()).startsWith("image/")) {
+                try {
+                    String filename = storageService.uploadFile(request.getFile().get(), "uploads/profile-pictures/");
+                    filename = filename.substring(filename.lastIndexOf("/") + 1); //Save only the name in the DB
+                    user.setProfilePicture(filename);
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while uploading profile picture: " + e.getMessage());
+                }
             }
-
             userRepository.save(user);
+            System.out.println("User created: " + user);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
 
         } catch (Exception e) {
