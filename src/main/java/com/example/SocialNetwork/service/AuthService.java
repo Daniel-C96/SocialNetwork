@@ -6,7 +6,8 @@ import com.example.SocialNetwork.model.Role;
 import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.repository.UserRepository;
 import com.example.SocialNetwork.security.JwtService;
-import com.example.SocialNetwork.service.s3.StorageService;
+import com.example.SocialNetwork.service.cloudinary.CloudinaryStorageService;
+import com.example.SocialNetwork.service.s3.S3StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.SocialNetwork.config.Constants.S3_URL;
 import static com.example.SocialNetwork.service.FieldValidatorService.*;
 
 @Service
@@ -38,8 +37,11 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    //@Autowired
+    //private S3StorageService s3StorageService;
+
     @Autowired
-    private StorageService storageService;
+    private CloudinaryStorageService cloudinaryStorageService;
 
     public ResponseEntity<?> register(RegisterRequest request) {
         try {
@@ -54,8 +56,8 @@ public class AuthService {
             //Check if there is a MultipartFile for the profile picture and it is a picture
             if (request.getFile() != null && request.getFile().isPresent() && Objects.requireNonNull(request.getFile().get().getContentType()).startsWith("image/")) {
                 try {
-                    String filename = storageService.uploadFile(request.getFile().get(), "uploads/profile-pictures/");
-                    filename = "/uploads/profile-pictures/" + filename.substring(filename.lastIndexOf("/") + 1); // Concatenate directory with filename
+                    String filename = cloudinaryStorageService.uploadFile(request.getFile().get(), "social-network/uploads/profile-pictures/");
+                    filename = "uploads/profile-pictures/" + filename; // Concatenate directory with filename
                     //filename = S3_URL + filename; //Save whole path to the DB
                     user.setProfilePicture(filename);
                 } catch (Exception e) {

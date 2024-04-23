@@ -2,21 +2,17 @@ package com.example.SocialNetwork.controller;
 
 import com.example.SocialNetwork.dto.post.CreatePostRequest;
 import com.example.SocialNetwork.dto.post.ViewPostDetails;
-import com.example.SocialNetwork.model.Post;
 import com.example.SocialNetwork.projection.post.PostBasicInformation;
 import com.example.SocialNetwork.projection.user.UserBasicInformation;
 import com.example.SocialNetwork.service.PostService;
-import com.example.SocialNetwork.service.s3.StorageService;
+import com.example.SocialNetwork.service.s3.S3StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -26,7 +22,7 @@ public class PostController {
     PostService postService;
 
     @Autowired
-    private StorageService storageService;
+    private S3StorageService s3StorageService;
 
     @Operation(description = "Creates a Post. It takes the User from the JWT provided.",
             summary = "Create Post endpoint")

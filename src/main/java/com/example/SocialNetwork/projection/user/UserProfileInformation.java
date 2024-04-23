@@ -13,7 +13,7 @@ public interface UserProfileInformation {
     String getProfilePicture();
 
     default String getProfilePictureUrl() {
-        return Constants.S3_URL + getProfilePicture();
+        return Constants.CLOUDINARY_URL + getProfilePicture();
     }
 
     String getDescription();
