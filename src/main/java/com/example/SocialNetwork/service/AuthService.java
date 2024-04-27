@@ -141,7 +141,7 @@ public class AuthService {
             var user = userRepository.findByUsernameOrEmailIgnoreCase(request.getIdentifier())
                     .orElseThrow();
             var jwtToken = jwtService.generateToken(user);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(jwtToken);
+            return ResponseEntity.status(HttpStatus.OK).body(jwtToken);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
