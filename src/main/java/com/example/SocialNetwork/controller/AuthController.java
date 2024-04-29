@@ -5,6 +5,7 @@ import com.example.SocialNetwork.dto.user.LoginRequest;
 import com.example.SocialNetwork.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AuthController {
     @Operation(description = "This is the endpoint to Sign Up a User.",
             summary = "Sign Up")
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> register(@ModelAttribute RegisterRequest request) { //@ModelAttribute for the file
+    public ResponseEntity<?> register(@Valid @ModelAttribute RegisterRequest request) { //@ModelAttribute for the file
         return authService.register(request);
     }
 

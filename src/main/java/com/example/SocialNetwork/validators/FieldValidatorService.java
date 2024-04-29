@@ -1,4 +1,4 @@
-package com.example.SocialNetwork.service;
+package com.example.SocialNetwork.validators;
 
 import org.springframework.stereotype.Service;
 
