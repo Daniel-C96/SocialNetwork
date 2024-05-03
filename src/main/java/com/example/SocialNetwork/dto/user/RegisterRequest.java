@@ -49,4 +49,5 @@ public class RegisterRequest {
 
     @Schema(example = "file")
     private Optional<MultipartFile> file;
+
 }

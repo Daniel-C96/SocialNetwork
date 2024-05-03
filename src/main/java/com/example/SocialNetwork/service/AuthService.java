@@ -74,11 +74,6 @@ public class AuthService {
     }
 
     private ResponseEntity<?> isValidUser(RegisterRequest request) {
-        // Verify the required fields are not empty
-        if (request.getUsername() == null || request.getPassword() == null ||
-                request.getEmail() == null || request.getAlias() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields.");
-        }
 
         // Verify if there is a user with that username already
         if (userRepository.findByUsernameIgnoreCase(request.getUsername()).isPresent()) {
@@ -88,31 +83,6 @@ public class AuthService {
         // Verify if there is a user with that email already
         if (userRepository.findByEmail(request.getEmail().toLowerCase()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("That email is already in use.");
-        }
-
-        // Validate the username
-        if (!isValidUsername(request.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not a valid name.");
-        }
-
-        // Validate the email
-        if (!isValidEmail(request.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not a valid email.");
-        }
-
-        // Validate the password
-        if (!isValidPassword(request.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not a valid password.");
-        }
-
-        // Check for description length
-        if (request.getDescription() != null && request.getDescription().length() > 50) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The description is too long.");
-        }
-
-        // Verify the alias is valid
-        if (!isValidAlias(request.getAlias())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not a valid alias.");
         }
 
         return null; // Return null if all checks pass
