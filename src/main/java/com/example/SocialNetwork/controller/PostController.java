@@ -8,6 +8,7 @@ import com.example.SocialNetwork.service.PostService;
 import com.example.SocialNetwork.service.s3.S3StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class PostController {
     @Operation(description = "Creates a Post. It takes the User from the JWT provided.",
             summary = "Create Post endpoint")
     @PostMapping("/create")
-    public ResponseEntity<?> createPost(@RequestBody CreatePostRequest postDTO) {
+    public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest postDTO) {
         return postService.createPost(postDTO);
     }
 

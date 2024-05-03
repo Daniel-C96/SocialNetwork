@@ -29,7 +29,7 @@ public class AuthController {
     @Operation(description = "This is the endpoint to Login that provides a JWT when the Login is successful.",
             summary = "Login")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 }
