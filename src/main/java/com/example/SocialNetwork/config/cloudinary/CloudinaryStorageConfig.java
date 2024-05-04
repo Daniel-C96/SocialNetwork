@@ -14,7 +14,6 @@ public class CloudinaryStorageConfig {
     private String api_secret;
     @Value("${CLOUDINARY_API_KEY}")
     private String api_key;
-
     @Value("${CLOUDINARY_NAME}")
     private String name;
 

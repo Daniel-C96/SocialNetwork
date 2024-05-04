@@ -7,6 +7,7 @@ import com.example.SocialNetwork.model.User;
 import com.example.SocialNetwork.repository.UserRepository;
 import com.example.SocialNetwork.security.JwtService;
 import com.example.SocialNetwork.service.cloudinary.CloudinaryStorageService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class AuthService {
     @Autowired
     private CloudinaryStorageService cloudinaryStorageService;
 
-    public ResponseEntity<?> register(RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid RegisterRequest request) {
         try {
             // Verify if the user is valid
             ResponseEntity<?> isValidUserResponse = isValidUser(request);
@@ -90,7 +91,7 @@ public class AuthService {
         return null; // Return null if all checks pass
     }
 
-    private User createUserFromDTO(RegisterRequest request) {
+    private User createUserFromDTO(@Valid RegisterRequest request) {
         return User.builder()
                 .username(request.getUsername())
                 .alias(request.getAlias())

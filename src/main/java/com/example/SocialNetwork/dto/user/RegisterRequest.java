@@ -32,9 +32,7 @@ public class RegisterRequest {
     private String password;
 
     @NotNull(message = "Alias is null.")
-    @NotEmpty(message = "Alias is empty.")
-    // Not only spaces and has characters
-    @Pattern(regexp = "^(?!\\s+$).{1,20}$", message = "Not a valid alias.")
+    @Pattern(regexp = "^(?!\\s*$)(.{1,20})$", message = "Alias is empty or not a valid alias.")
     @Schema(example = "John1998")
     private String alias;
 
