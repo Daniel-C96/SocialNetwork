@@ -168,7 +168,7 @@ class AuthServiceTest {
         // Simulate passwordEncoder.matches returning true (password matches)
         when(passwordEncoder.matches(request.getPassword(), mockedUser.getPassword())).thenReturn(true);
 
-        ResponseEntity<?> response = authService.login(request);
+        var response = authService.login(request);
         assertEquals(200, response.getStatusCode().value());
 
     }
@@ -186,7 +186,7 @@ class AuthServiceTest {
         when(userRepository.findByUsernameOrEmailIgnoreCase(request.getIdentifier())).thenReturn(Optional.of(mockedUser));
         // Simulate passwordEncoder.matches returning false
         when(passwordEncoder.matches(request.getPassword(), mockedUser.getPassword())).thenReturn(false);
-        ResponseEntity<?> response = authService.login(request);
+        var response = authService.login(request);
         assertEquals(401, response.getStatusCode().value());
     }
 }
